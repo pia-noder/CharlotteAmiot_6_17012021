@@ -1,4 +1,8 @@
+const express = require('express');
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
 
+const userRoute = require('./routes/user');
 
 //Lier la BD à l'API
 mongoose.connect('mongodb+srv://User1:MongoAtlas21@cluster0.l3cyi.mongodb.net/Cluster0?retryWrites=true&w=majority',
@@ -6,6 +10,8 @@ mongoose.connect('mongodb+srv://User1:MongoAtlas21@cluster0.l3cyi.mongodb.net/Cl
     useUnifiedTopology: true })
   .then(() => console.log('Connexion à MongoDB réussie !'))
   .catch(() => console.log('Connexion à MongoDB échouée !'));
+
+const app = express();
 
 //Modifier les headers pour accepter les requêtes venant de tous les serveurs
 app.use((req, res, next) => {
@@ -15,3 +21,9 @@ app.use((req, res, next) => {
     next();
   });
  
+app.use(bodyParser.json());
+
+//Enregistrement des routes
+app.use('/api/auth',userRoute);
+
+module.exports = app;

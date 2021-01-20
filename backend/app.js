@@ -1,8 +1,6 @@
-const express = require('express'); //importation de l'objet express
-const mongoose = require('mongoose');
 
-const app = express();
 
+//Lier la BD à l'API
 mongoose.connect('mongodb+srv://User1:MongoAtlas21@cluster0.l3cyi.mongodb.net/Cluster0?retryWrites=true&w=majority',
   { useNewUrlParser: true,
     useUnifiedTopology: true })
@@ -17,9 +15,3 @@ app.use((req, res, next) => {
     next();
   });
  
-  
-  app.use((req, res) => {
-     res.json({ message: 'Votre requête a bien été reçue !' }); 
-  });
-  
-module.exports = app; //exporter "app" pour pouvoir l'utiliser dans tous les fichiers

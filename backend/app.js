@@ -1,11 +1,16 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const dotenv = require('dotenv');
+dotenv.config();
 
 const userRoute = require('./routes/user');
 
 //Lier la BD à l'API
-mongoose.connect('mongodb+srv://User1:MongoAtlas21@cluster0.l3cyi.mongodb.net/Cluster0?retryWrites=true&w=majority',
+mongoose.set('useNewUrlParser', true);
+mongoose.set('useFindAndModify', false);
+mongoose.set('useCreateIndex', true);
+mongoose.connect(`mongodb+srv://${process.env.BD_USER}:${process.env.BD_PASSWORD}@cluster0.l3cyi.mongodb.net/Cluster0?retryWrites=true&w=majority`,
   { useNewUrlParser: true,
     useUnifiedTopology: true })
   .then(() => console.log('Connexion à MongoDB réussie !'))
@@ -22,6 +27,8 @@ app.use((req, res, next) => {
   });
  
 app.use(bodyParser.json());
+
+
 
 //Enregistrement des routes
 app.use('/api/auth',userRoute);

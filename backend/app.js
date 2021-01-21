@@ -3,8 +3,11 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 dotenv.config();
+//Accès au chemin du notre système de fichiers
+const path = require('path');
 
 const userRoute = require('./routes/user');
+const sauceRoute = require('./routes/sauce');
 
 //Lier la BD à l'API
 mongoose.set('useNewUrlParser', true);
@@ -28,9 +31,11 @@ app.use((req, res, next) => {
  
 app.use(bodyParser.json());
 
-
-
 //Enregistrement des routes
+app.use('/images',express.static(path.join(__dirname,'images')));
+
+app.use('/api/sauces', sauceRoute);
 app.use('/api/auth',userRoute);
+
 
 module.exports = app;

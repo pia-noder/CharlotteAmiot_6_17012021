@@ -3,6 +3,8 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 dotenv.config();
+
+const app = express();
 //Accès au chemin du notre système de fichiers
 const path = require('path');
 
@@ -19,7 +21,7 @@ mongoose.connect(`mongodb+srv://${process.env.BD_USER}:${process.env.BD_PASSWORD
   .then(() => console.log('Connexion à MongoDB réussie !'))
   .catch(() => console.log('Connexion à MongoDB échouée !'));
 
-const app = express();
+
 
 //Modifier les headers pour accepter les requêtes venant de tous les serveurs
 app.use((req, res, next) => {

@@ -5,6 +5,14 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 exports.signup = (req,res,next) => {
+  let regExp = /^[A-zÀ-ú]+(([',. -][A-zÀ-ú ])?[A-zÀ-ú]*)*$/;
+
+  if(req.body.email == null || req.body.password){
+    return rep.status(200).json({message: "Remplir tous les champs du formulaire !"})
+    
+  }else if  (!regExp.test(req.body.email)){
+    return res.status(400).json({message: "Rentrez un format d'email valide !"})
+  }
     bcrypt.hash(req.body.password,10)
     .then(
       hash => {

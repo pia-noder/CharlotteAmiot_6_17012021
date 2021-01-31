@@ -52,4 +52,33 @@ exports.getAllSauces = (req, res, next) => {
 
 exports.likeOrDislikeSauce = (req, res, next) => {
 
-};
+  const userId = req.body.userId
+
+  Sauce.findOne({ _id: req.params.id }) 
+    .then((sauce) => { 
+      const alreadyLiked = sauce.usersLiked.includes(userId);
+      const alreadyDisliked = sauce.usersDisliked.includes(userId);
+
+      const wantToLike = !alreadyDisliked && req.body.like == 1;
+      const wantToDislike = !alreadyLiked && req.body.like == -1;
+
+      if (wantToLike) {
+          sauce.usersLiked.push(userId) 
+          sauce.likes++
+      } else if (wantToDislike) {
+          sauce.usersDisliked.push(userId) 
+          sauce.dislikes++
+      } else if (req.body.like == 0 && alreadyLiked) { 
+          sauce.likes--
+          sauce.usersLiked.pull(userId) 
+      } else if (req.body.like == 0 && alreadyDisliked) {
+          sauce.dislikes--
+          sauce.usersDisliked.pull(userId)
+      }
+      Sauce.updateOne({ _id: req.params.id }, { usersLiked: sauce.usersLiked, usersDisliked: sauce.usersDisliked, dislikes: sauce.dislikes, likes: sauce.likes, _id: req.params.id })
+          .then(() => res.status(200).json({ message: 'Sauce modifiée !' })) 
+          .catch(error => res.status(400).json({ error })); 
+    })
+    .catch(error => res.status(400).json({ error })); 
+}  
+ 

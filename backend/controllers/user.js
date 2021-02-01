@@ -5,10 +5,10 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 exports.signup = (req,res,next) => {
-  let regExp = /^[A-zÀ-ú]+(([',. -][A-zÀ-ú ])?[A-zÀ-ú]*)*$/;
+  let regExp = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
-  if(req.body.email == null || req.body.password){
-    return rep.status(200).json({message: "Remplir tous les champs du formulaire !"})
+  if(req.body.email == null || req.body.password == null){
+    return res.status(400).json({message: "Remplir tous les champs du formulaire !"})
     
   }else if  (!regExp.test(req.body.email)){
     return res.status(400).json({message: "Rentrez un format d'email valide !"})

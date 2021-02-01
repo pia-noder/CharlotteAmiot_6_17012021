@@ -1,18 +1,27 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-const helmet = require('helmet')
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
+
 const dotenv = require('dotenv');
 dotenv.config();
 
 const app = express();
+
 //Accès au chemin du notre système de fichiers
 const path = require('path');
 
 const userRoute = require('./routes/user');
 const sauceRoute = require('./routes/sauce');
 
-//Lier la BD à l'API
+//Définir le nombre de requête par période
+const limiter = rateLimit({
+  windowMs: 15*60*1000, // 15 minutes
+  max: 100 // limite chaque IP à 100 requête par windowMs
+});
+
+//Connexion à la BD
 mongoose.set('useNewUrlParser', true);
 mongoose.set('useFindAndModify', false);
 mongoose.set('useCreateIndex', true);
@@ -31,7 +40,7 @@ app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
     next();
   });
- 
+
 app.use(bodyParser.json());
 app.use(helmet());
 
@@ -39,7 +48,7 @@ app.use(helmet());
 app.use('/images',express.static(path.join(__dirname,'images')));
 
 app.use('/api/sauces', sauceRoute);
-app.use('/api/auth',userRoute);
+app.use('/api/auth',limiter, userRoute);
 
 
 module.exports = app;
